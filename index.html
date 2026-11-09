@@ -484,8 +484,8 @@
             const tbUsers = document.getElementById('tb-resumen-usuarios');
             const tbHosts = document.getElementById('tb-resumen-hosts');
 
-            const { data: users, error: errUsers } = await _supabase.from('vw_risk_users').select('*').order('risk_score', { ascending: false }).limit(10);
-            const { data: hosts, error: errHosts } = await _supabase.from('vw_risk_hosts').select('*').order('risk_score', { ascending: false }).limit(10);
+            const { data: users, error: errUsers } = await _supabase.from('vw_risk_users').select('*').order('risk_score', { ascending: false }).limit(18);
+            const { data: hosts, error: errHosts } = await _supabase.from('vw_risk_hosts').select('*').order('risk_score', { ascending: false }).limit(18);
 
             if (errUsers) {
                 tbUsers.innerHTML = `<tr><td colspan="4" class="p-4 text-red-400">Error: ${errUsers.message}</td></tr>`;
