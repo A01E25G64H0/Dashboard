@@ -20,13 +20,13 @@
                 🛡️ SOC Dashboard
             </div>
             <nav class="flex-1 p-4 space-y-2">
-                <button onclick="showSection('resumen')" class="nav-btn w-full text-left px-4 py-2 rounded bg-blue-600 hover:bg-blue-500">📊 Resumen General de Riesgo </button>
+                <button onclick="showSection('resumen')" class="nav-btn w-full text-left px-4 py-2 rounded bg-blue-600 hover:bg-blue-500">📊 Resumen Cuentas y Equipos</button>
                 <button onclick="showSection('breaches')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700">🔓 Top Cuentas con brechas</button>
                 <button onclick="showSection('visualizaciones')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-cyan-400 font-semibold flex items-center gap-2">📊 Visualizaciones</button>
                 <button onclick="showSection('equipos')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700">💻 Inventario</button>
                 <button onclick="showSection('ciencia')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-purple-400 font-semibold">🔬 Ciencia de Datos</button>
-                <button onclick="showSection('modelo')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-emerald-400 font-semibold flex items-center gap-2">📈 Modelo Probabilístico aplicado a Equipos</button>
-                <button onclick="showSection('modelo-usuarios')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-indigo-400 font-semibold flex items-center gap-2">👤 Modelo Probabilístico aplicado a Usuarios</button>
+                <button onclick="showSection('modelo')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-emerald-400 font-semibold flex items-center gap-2">📈 Modelo Probabilístico Equipos</button>
+                <button onclick="showSection('modelo-usuarios')" class="nav-btn w-full text-left px-4 py-2 rounded hover:bg-gray-700 text-indigo-400 font-semibold flex items-center gap-2">👤 Modelo Probabilístico Usuarios</button>
             </nav>
         </aside>
 
@@ -40,7 +40,7 @@
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <h2 class="text-lg font-semibold mb-4 text-red-400">🔥 Top Cuentas de Usuario en Riesgo</h2>
                         <table class="w-full text-left text-sm">
-                            <thead><tr class="border-b border-gray-700"><th class="py-2">Usuario</th><th>Equipo</th><th>Breaches</th><th>Risk Score</th></tr></thead>
+                            <thead><tr class="border-b border-gray-700"><th class="py-2">Usuario</th><th>Equipo</th><th>Breaches / Eventos</th><th>Risk Score</th></tr></thead>
                             <tbody id="tb-resumen-usuarios"><tr><td colspan="4" class="p-4 text-center text-gray-500">Cargando datos...</td></tr></tbody>
                         </table>
                     </div>
@@ -56,19 +56,26 @@
 
             <!-- 2. PWNED BREACHES -->
             <section id="sec-breaches" class="section-content hidden">
-                <h1 class="text-2xl font-bold mb-4">Pwned Breaches</h1>
+                <h1 class="text-2xl font-bold mb-4">Top Cuentas con Mayor Número de Brechas</h1>
                 <div class="flex gap-4 mb-4">
                     <input id="src-breaches-user" type="text" placeholder="Buscar por usuario..." class="bg-gray-800 border border-gray-700 px-3 py-2 rounded text-sm w-1/3">
                     <input id="src-breaches-app" type="text" placeholder="Buscar por aplicación/breach..." class="bg-gray-800 border border-gray-700 px-3 py-2 rounded text-sm w-1/3">
                     <button onclick="loadBreaches()" class="bg-blue-600 px-4 py-2 rounded text-sm">Buscar</button>
                 </div>
                 <table class="w-full bg-gray-800 rounded border border-gray-700 text-left text-sm">
-                    <thead><tr class="border-b border-gray-700"><th class="p-3">Usuario</th><th>Breach</th><th>Fecha</th></tr></thead>
+                    <thead>
+                        <tr class="border-b border-gray-700 text-gray-300">
+                            <th class="p-3">Usuario</th>
+                            <th class="text-center">N° Brechas</th>
+                            <th>Breaches / Aplicaciones</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
                     <tbody id="tb-breaches"></tbody>
                 </table>
             </section>
 
-            <!-- 3. VISUALIZACIONES (GRÁFICOS DE PASTEL) -->
+            <!-- 3. VISUALIZACIONES -->
             <section id="sec-visualizaciones" class="section-content hidden">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -79,7 +86,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Gráfico 1: WSUS < 70% vs >= 70% -->
                     <div class="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow flex flex-col items-center">
                         <h2 class="text-md font-semibold text-gray-200 mb-4 flex items-center gap-2">
                             <span>🔄</span> Cobertura WSUS (&lt; 70% vs &ge; 70%)
@@ -89,7 +95,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico 2: ESET por versión de aplicación -->
                     <div class="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow flex flex-col items-center">
                         <h2 class="text-md font-semibold text-gray-200 mb-4 flex items-center gap-2">
                             <span>🛡️</span> ESET por Versión de Aplicación
@@ -99,7 +104,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico 3: Eventos por name_user -->
                     <div class="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow flex flex-col items-center">
                         <h2 class="text-md font-semibold text-gray-200 mb-4 flex items-center gap-2">
                             <span>⚡</span> Actividad de Eventos por Usuario
@@ -146,11 +150,10 @@
                     <button onclick="loadCienciaDatos()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded text-sm font-semibold">🔄 Re-analizar Datos</button>
                 </div>
 
-                <!-- SECCIÓN USUARIO COMPROMETIDO -->
                 <div class="mb-8">
                     <h2 class="text-xl font-semibold mb-3 text-red-400 flex items-center gap-2">
-                        <span>👤 Usuarios Comprometidos (Riesgo Crítico)</span>
-                        <span class="text-xs bg-red-900 text-red-200 px-2 py-0.5 rounded-full border border-red-700">Cruce Breaches + Intentos Fallidos Wazuh</span>
+                        <span>👤 Usuarios Comprometidos (Riesgo Crítico y Alto)</span>
+                        <span class="text-xs bg-red-900 text-red-200 px-2 py-0.5 rounded-full border border-red-700">Breaches / Wazuh Anomaly Analytics</span>
                     </h2>
                     <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
                         <table class="w-full text-left text-sm">
@@ -170,10 +173,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN EQUIPO DE CÓMPUTO COMPROMETIDO -->
                 <div>
                     <h2 class="text-xl font-semibold mb-3 text-orange-400 flex items-center gap-2">
-                        <span>💻 Equipos de Cómputo Comprometidos (Riesgo Crítico)</span>
+                        <span>💻 Equipos de Cómputo Comprometidos (Riesgo Crítico y Alto)</span>
                         <span class="text-xs bg-orange-900 text-orange-200 px-2 py-0.5 rounded-full border border-orange-700">WSUS + Wazuh + ESET Anomaly Analytics</span>
                     </h2>
                     <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
@@ -212,6 +214,7 @@
                     </span>
                 </div>
 
+                <!-- DINÁMICO: KPIs RECTIFICADOS -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <p class="text-xs text-gray-400 font-semibold tracking-wider">EQUIPOS EN RIESGO CRÍTICO ML</p>
@@ -220,18 +223,18 @@
                     </div>
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <p class="text-xs text-gray-400 font-semibold tracking-wider">PROBABILIDAD MEDIA DE RED</p>
-                        <h3 id="ml-kpi-promedio" class="text-3xl font-extrabold text-cyan-400 my-1">5%</h3>
+                        <h3 id="ml-kpi-promedio" class="text-3xl font-extrabold text-cyan-400 my-1">0%</h3>
                         <p class="text-xs text-gray-500">Promedio sigmoide institucional</p>
                     </div>
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <p class="text-xs text-gray-400 font-semibold tracking-wider">FACTOR DOMINANTE</p>
-                        <h3 class="text-lg font-bold text-cyan-400 my-1">Estado Agente ESET</h3>
-                        <p class="text-xs text-gray-500">Mayor peso relativo (&beta; = 2.5)</p>
+                        <h3 id="ml-kpi-dominante" class="text-lg font-bold text-cyan-400 my-1">Calculando...</h3>
+                        <p id="ml-kpi-dominante-sub" class="text-xs text-gray-500">Mayor impacto observado en red</p>
                     </div>
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-                        <p class="text-xs text-gray-400 font-semibold tracking-wider">PRECISIÓN ESTIMADA</p>
-                        <h3 class="text-3xl font-extrabold text-emerald-400 my-1">92.4%</h3>
-                        <p class="text-xs text-gray-500">Matriz de confusión (Recall: 89.1%)</p>
+                        <p class="text-xs text-gray-400 font-semibold tracking-wider">COBERTURA TELEMÉTRICA RED</p>
+                        <h3 id="ml-kpi-cobertura" class="text-3xl font-extrabold text-emerald-400 my-1">0%</h3>
+                        <p id="ml-kpi-cobertura-sub" class="text-xs text-gray-500">Equipos con datos multi-fuente</p>
                     </div>
                 </div>
 
@@ -345,6 +348,7 @@
                     </span>
                 </div>
 
+                <!-- DINÁMICO: KPIs RECTIFICADOS -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <p class="text-xs text-gray-400 font-semibold tracking-wider">USUARIOS EN RIESGO CRÍTICO ML</p>
@@ -358,13 +362,13 @@
                     </div>
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <p class="text-xs text-gray-400 font-semibold tracking-wider">FACTOR DOMINANTE</p>
-                        <h3 class="text-lg font-bold text-indigo-400 my-1">Brechas Pwned</h3>
-                        <p class="text-xs text-gray-500">Mayor peso de identidad (&beta; = 2.8)</p>
+                        <h3 id="ml-kpi-user-dominante" class="text-lg font-bold text-indigo-400 my-1">Calculando...</h3>
+                        <p id="ml-kpi-user-dominante-sub" class="text-xs text-gray-500">Mayor impacto observado en usuarios</p>
                     </div>
                     <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-                        <p class="text-xs text-gray-400 font-semibold tracking-wider">PRECISIÓN ESTIMADA (USER)</p>
-                        <h3 class="text-3xl font-extrabold text-purple-400 my-1">94.1%</h3>
-                        <p class="text-xs text-gray-500">Evaluación de patrones de autenticación</p>
+                        <p class="text-xs text-gray-400 font-semibold tracking-wider">COBERTURA TELEMÉTRICA USUARIOS</p>
+                        <h3 id="ml-kpi-user-cobertura" class="text-3xl font-extrabold text-purple-400 my-1">0%</h3>
+                        <p id="ml-kpi-user-cobertura-sub" class="text-xs text-gray-500">Identidades con monitoreo activo</p>
                     </div>
                 </div>
 
@@ -461,10 +465,27 @@
         const SUPABASE_KEY = 'sb_publishable_3iSVpQ3_-7welTSaUXkICA_4qZDT6MC';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Instancias globales para destruir/re-renderizar gráficos en Chart.js
+        // Instancias globales de Chart.js
         let chartWSUSInstance = null;
         let chartESETInstance = null;
         let chartWazuhInstance = null;
+
+        // Normalizador global de usuarios
+        function cleanUsername(rawUser) {
+            if (!rawUser) return '';
+            return rawUser
+                .toString()
+                .toLowerCase()
+                .replace(/.*\\/, '') // Remueve dominios tipo DOMAIN\user
+                .split('@')[0]       // Remueve correos tipo user@company.com
+                .trim();
+        }
+
+        // Normalizador global de hostnames
+        function cleanHostname(rawHost) {
+            if (!rawHost) return '';
+            return rawHost.toString().toLowerCase().trim();
+        }
 
         // Control de Menú
         function showSection(id) {
@@ -479,21 +500,74 @@
             if (id === 'modelo-usuarios') loadModeloProbabilisticoUsuarios();
         }
 
-        // 1. Cargar Resumen General
+        // 1. Resumen General
         async function loadResumen() {
             const tbUsers = document.getElementById('tb-resumen-usuarios');
             const tbHosts = document.getElementById('tb-resumen-hosts');
 
-            const { data: users, error: errUsers } = await _supabase.from('vw_risk_users').select('*').order('risk_score', { ascending: false }).limit(18);
-            const { data: hosts, error: errHosts } = await _supabase.from('vw_risk_hosts').select('*').order('risk_score', { ascending: false }).limit(18);
+            tbUsers.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Evaluando cuentas en riesgo...</td></tr>`;
 
-            if (errUsers) {
-                tbUsers.innerHTML = `<tr><td colspan="4" class="p-4 text-red-400">Error: ${errUsers.message}</td></tr>`;
-            } else if (!users || users.length === 0) {
-                tbUsers.innerHTML = `<tr><td colspan="4" class="p-4 text-gray-400 text-center">No hay datos en la tabla.</td></tr>`;
+            const [{ data: breaches }, { data: wazuhEvents }, { data: hosts, error: errHosts }] = await Promise.all([
+                _supabase.from('pwned_breaches').select('*'),
+                _supabase.from('wazuh_events').select('*'),
+                _supabase.from('vw_risk_hosts').select('*').order('risk_score', { ascending: false }).limit(10)
+            ]);
+
+            const userRiskMap = {};
+
+            (breaches || []).forEach(b => {
+                const rawName = b.name_user || b.user;
+                const cleanKey = cleanUsername(rawName);
+                if (!cleanKey) return;
+                if (!userRiskMap[cleanKey]) {
+                    userRiskMap[cleanKey] = { displayName: rawName, breaches: 0, wazuhEvents: 0, hostname: '-' };
+                }
+                userRiskMap[cleanKey].breaches += 1;
+            });
+
+            (wazuhEvents || []).forEach(w => {
+                const rawName = w.name_user || w.user;
+                const cleanKey = cleanUsername(rawName);
+                if (!cleanKey) return;
+                if (!userRiskMap[cleanKey]) {
+                    userRiskMap[cleanKey] = { displayName: rawName, breaches: 0, wazuhEvents: 0, hostname: w.hostname || '-' };
+                }
+                userRiskMap[cleanKey].wazuhEvents += 1;
+                if (w.hostname && userRiskMap[cleanKey].hostname === '-') {
+                    userRiskMap[cleanKey].hostname = w.hostname;
+                }
+            });
+
+            const topUsers = Object.keys(userRiskMap)
+                .map(key => {
+                    const data = userRiskMap[key];
+                    const riskScore = Math.min(100, (data.breaches * 35) + (data.wazuhEvents * 15));
+                    return {
+                        name_user: data.displayName || key,
+                        hostname: data.hostname,
+                        breaches: data.breaches,
+                        wazuhEvents: data.wazuhEvents,
+                        riskScore
+                    };
+                })
+                .filter(u => u.breaches > 0 || u.wazuhEvents > 0)
+                .sort((a, b) => b.riskScore - a.riskScore)
+                .slice(0, 10);
+
+            if (!topUsers || topUsers.length === 0) {
+                tbUsers.innerHTML = `<tr><td colspan="4" class="p-4 text-gray-400 text-center">Sin usuarios con brechas o eventos registrados.</td></tr>`;
             } else {
-                tbUsers.innerHTML = users.map(u => 
-                    `<tr class="border-b border-gray-700"><td class="py-2">${u.name_user || '-'}</td><td>${u.hostname || '-'}</td><td>${u.total_breaches || 0}</td><td class="font-bold ${u.risk_score > 60 ? 'text-red-400' : 'text-yellow-400'}">${u.risk_score || 0}/100</td></tr>`
+                tbUsers.innerHTML = topUsers.map(u => 
+                    `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                        <td class="py-2 font-medium text-white">${u.name_user}</td>
+                        <td class="font-mono text-cyan-400">${u.hostname}</td>
+                        <td>
+                            <span class="bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded text-xs">
+                                ${u.breaches} brecha(s) | ${u.wazuhEvents} evento(s)
+                            </span>
+                        </td>
+                        <td class="font-bold ${u.riskScore > 60 ? 'text-red-400' : 'text-yellow-400'}">${u.riskScore}/100</td>
+                    </tr>`
                 ).join('');
             }
 
@@ -503,7 +577,12 @@
                 tbHosts.innerHTML = `<tr><td colspan="4" class="p-4 text-gray-400 text-center">No hay datos en la tabla.</td></tr>`;
             } else {
                 tbHosts.innerHTML = hosts.map(h => 
-                    `<tr class="border-b border-gray-700"><td class="py-2">${h.hostname || '-'}</td><td>${h.patch_pct || 0}%</td><td>${h.eset_alerts || 0}</td><td class="font-bold ${h.risk_score > 60 ? 'text-red-400' : 'text-yellow-400'}">${h.risk_score || 0}/100</td></tr>`
+                    `<tr class="border-b border-gray-700">
+                        <td class="py-2 font-mono text-cyan-400">${h.hostname || '-'}</td>
+                        <td>${h.patch_pct || 0}%</td>
+                        <td>${h.eset_alerts || 0}</td>
+                        <td class="font-bold ${h.risk_score > 60 ? 'text-red-400' : 'text-yellow-400'}">${h.risk_score || 0}/100</td>
+                    </tr>`
                 ).join('');
             }
         }
@@ -517,18 +596,48 @@
             if (user) query = query.ilike('name_user', `%${user}%`);
             if (app) query = query.ilike('breach', `%${app}%`);
 
-            const { data, error } = await query.limit(50);
+            const { data, error } = await query;
             const tb = document.getElementById('tb-breaches');
+
             if (error) {
-                tb.innerHTML = `<tr><td colspan="3" class="p-4 text-red-400">Error: ${error.message}</td></tr>`;
-            } else {
-                tb.innerHTML = data && data.length ? data.map(b => 
-                    `<tr class="border-b border-gray-700"><td class="p-3">${b.name_user || '-'}</td><td>${b.breach || '-'}</td><td>${b.date || '-'}</td></tr>`
-                ).join('') : `<tr><td colspan="3" class="p-4 text-center text-gray-400">Sin datos.</td></tr>`;
+                tb.innerHTML = `<tr><td colspan="4" class="p-4 text-red-400">Error: ${error.message}</td></tr>`;
+                return;
             }
+
+            if (!data || data.length === 0) {
+                tb.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Sin datos.</td></tr>`;
+                return;
+            }
+
+            const parsedData = data.map(b => {
+                const breachStr = b.breach || '';
+                const breachCount = breachStr ? breachStr.split(',').filter(x => x.trim()).length : 0;
+                return {
+                    name_user: b.name_user || b.user || '-',
+                    breachCount,
+                    breaches: breachStr || '-',
+                    date: b.date || '-'
+                };
+            });
+
+            parsedData.sort((a, b) => b.breachCount - a.breachCount);
+            const top15 = parsedData.slice(0, 15);
+
+            tb.innerHTML = top15.map(b => 
+                `<tr class="border-b border-gray-700 hover:bg-gray-750">
+                    <td class="p-3 font-semibold text-white">${b.name_user}</td>
+                    <td class="text-center font-bold text-red-400 font-mono">
+                        <span class="bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full text-xs">
+                            ${b.breachCount}
+                        </span>
+                    </td>
+                    <td class="text-xs text-gray-300 leading-relaxed">${b.breaches}</td>
+                    <td class="text-gray-400 text-xs">${b.date}</td>
+                </tr>`
+            ).join('');
         }
 
-        // 3. APARTADO VISUALIZACIONES: 3 GRÁFICOS DE PASTEL (WSUS, ESET Y WAZUH)
+        // 3. Visualizaciones
         async function loadVisualizaciones() {
             const [{ data: wsusData }, { data: esetData }, { data: wazuhData }] = await Promise.all([
                 _supabase.from('wsus_status').select('patch_coverage_pct'),
@@ -536,13 +645,9 @@
                 _supabase.from('wazuh_events').select('name_user, user')
             ]);
 
-            // --- GRÁFICO 1: WSUS (< 70% vs >= 70%) ---
             let wsusUnder70 = 0;
             let wsusOver70 = 0;
-            const wsusList = (wsusData && wsusData.length > 0) ? wsusData : [
-                { patch_coverage_pct: 45 }, { patch_coverage_pct: 65 }, { patch_coverage_pct: 85 },
-                { patch_coverage_pct: 90 }, { patch_coverage_pct: 95 }, { patch_coverage_pct: 50 }
-            ];
+            const wsusList = (wsusData && wsusData.length > 0) ? wsusData : [];
 
             wsusList.forEach(w => {
                 const raw = (w.patch_coverage_pct || '').toString().replace(/[^0-9.]/g, '');
@@ -567,31 +672,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#e5e7eb', font: { size: 12 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const val = context.raw || 0;
-                                    const pct = total ? Math.round((val / total) * 100) : 0;
-                                    return `${context.label}: ${val} (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { labels: { color: '#e5e7eb', font: { size: 12 } } } }
                 }
             });
 
-            // --- GRÁFICO 2: ESET por version_aplication ---
-            const esetList = (esetData && esetData.length > 0) ? esetData : [
-                { version_aplication: '13.1.2036.0' }, { version_aplication: '13.1.2036.0' },
-                { version_aplication: '13.1.2036.0' }, { version_aplication: '12.0.100.0' },
-                { version_aplication: '11.2.40.0' }
-            ];
-
             const esetVerCounts = {};
-            esetList.forEach(e => {
+            (esetData || []).forEach(e => {
                 const ver = e.version_aplication ? e.version_aplication.trim() : 'Sin Versión / N/D';
                 esetVerCounts[ver] = (esetVerCounts[ver] || 0) + 1;
             });
@@ -601,9 +687,9 @@
             chartESETInstance = new Chart(ctxESET, {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(esetVerCounts),
+                    labels: Object.keys(esetVerCounts).length ? Object.keys(esetVerCounts) : ['Sin datos'],
                     datasets: [{
-                        data: Object.values(esetVerCounts),
+                        data: Object.values(esetVerCounts).length ? Object.values(esetVerCounts) : [1],
                         backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6', '#6366f1'],
                         borderColor: '#1f2937',
                         borderWidth: 2
@@ -612,30 +698,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#e5e7eb', font: { size: 12 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const val = context.raw || 0;
-                                    const pct = total ? Math.round((val / total) * 100) : 0;
-                                    return `${context.label}: ${val} (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { labels: { color: '#e5e7eb', font: { size: 12 } } } }
                 }
             });
 
-            // --- GRÁFICO 3: Eventos por name_user ---
-            const wazuhList = (wazuhData && wazuhData.length > 0) ? wazuhData : [
-                { name_user: 'alramirez' }, { name_user: 'alramirez' }, { name_user: 'evalenzuela' },
-                { name_user: 'evalenzuela' }, { name_user: 'evalenzuela' }, { name_user: 'csahagun' }
-            ];
-
             const wazuhUserCounts = {};
-            wazuhList.forEach(w => {
+            (wazuhData || []).forEach(w => {
                 const u = w.name_user || w.user || 'Sin Usuario';
                 wazuhUserCounts[u] = (wazuhUserCounts[u] || 0) + 1;
             });
@@ -645,9 +713,9 @@
             chartWazuhInstance = new Chart(ctxWazuh, {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(wazuhUserCounts),
+                    labels: Object.keys(wazuhUserCounts).length ? Object.keys(wazuhUserCounts) : ['Sin datos'],
                     datasets: [{
-                        data: Object.values(wazuhUserCounts),
+                        data: Object.values(wazuhUserCounts).length ? Object.values(wazuhUserCounts) : [1],
                         backgroundColor: ['#f97316', '#eab308', '#06b6d4', '#a855f7', '#ef4444', '#10b981'],
                         borderColor: '#1f2937',
                         borderWidth: 2
@@ -656,24 +724,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#e5e7eb', font: { size: 12 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const val = context.raw || 0;
-                                    const pct = total ? Math.round((val / total) * 100) : 0;
-                                    return `${context.label}: ${val} (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { labels: { color: '#e5e7eb', font: { size: 12 } } } }
                 }
             });
         }
 
-        // 4. Cargar Equipos y Usuarios
+        // 4. Cargar Equipos
         async function loadEquipos() {
             let query = _supabase.from('equipos_usuarios').select('*');
             const user = document.getElementById('src-eq-user').value;
@@ -704,7 +760,7 @@
             }
         }
 
-        // 5. CIENCIA DE DATOS: HEURÍSTICA DE VULNERABILIDADES (SOLO CRÍTICOS)
+        // 5. Ciencia de Datos
         async function loadCienciaDatos() {
             const tbUsers = document.getElementById('tb-ciencia-usuarios');
             const tbEquipos = document.getElementById('tb-ciencia-equipos');
@@ -728,25 +784,26 @@
 
             const now = new Date();
 
-            // A) USUARIOS COMPROMETIDOS
             const userRiskMap = {};
             (breaches || []).forEach(b => {
-                const uName = b.name_user || b.user;
-                if (!uName) return;
-                if (!userRiskMap[uName]) userRiskMap[uName] = { breaches: [], accessAttempts: 0 };
-                userRiskMap[uName].breaches.push(b.breach || 'Filtración detectada');
+                const rawName = b.name_user || b.user;
+                const key = cleanUsername(rawName);
+                if (!key) return;
+                if (!userRiskMap[key]) userRiskMap[key] = { displayName: rawName, breaches: [], accessAttempts: 0 };
+                userRiskMap[key].breaches.push(b.breach || 'Filtración detectada');
             });
 
             (wazuhEvents || []).forEach(w => {
-                const uName = w.name_user || w.user;
-                if (!uName) return;
-                if (!userRiskMap[uName]) userRiskMap[uName] = { breaches: [], accessAttempts: 0 };
-                userRiskMap[uName].accessAttempts += 1;
+                const rawName = w.name_user || w.user;
+                const key = cleanUsername(rawName);
+                if (!key) return;
+                if (!userRiskMap[key]) userRiskMap[key] = { displayName: rawName, breaches: [], accessAttempts: 0 };
+                userRiskMap[key].accessAttempts += 1;
             });
 
             const compromisedUsers = Object.keys(userRiskMap)
-                .map(user => {
-                    const data = userRiskMap[user];
+                .map(key => {
+                    const data = userRiskMap[key];
                     const inBreaches = data.breaches.length > 0;
                     const attempts = data.accessAttempts;
 
@@ -754,13 +811,13 @@
                     let riskBadge = 'bg-gray-700 text-gray-300';
                     let alerts = [];
 
-                    if (inBreaches) alerts.push(`Presente en ${data.breaches.length} filtración(es) (pwned_breaches).`);
+                    if (inBreaches) alerts.push(`Presente en ${data.breaches.length} filtración(es).`);
                     if (attempts > 0) alerts.push(`Registra ${attempts} evento(s) en Wazuh.`);
 
                     if (inBreaches && attempts > 0) {
                         riskLevel = 'Crítico';
                         riskBadge = 'bg-red-900 text-red-200 border border-red-500 font-bold';
-                    } else if (inBreaches) {
+                    } else if (inBreaches || attempts >= 5) {
                         riskLevel = 'Alto';
                         riskBadge = 'bg-red-800 text-red-100';
                     } else if (attempts > 0) {
@@ -768,9 +825,9 @@
                         riskBadge = 'bg-yellow-800 text-yellow-100';
                     }
 
-                    return { user, breaches: data.breaches, attempts, riskLevel, riskBadge, alerts };
+                    return { user: data.displayName || key, breaches: data.breaches, attempts, riskLevel, riskBadge, alerts };
                 })
-                .filter(u => u.riskLevel === 'Crítico')
+                .filter(u => u.riskLevel === 'Crítico' || u.riskLevel === 'Alto')
                 .sort((a, b) => (b.breaches.length * 2 + b.attempts) - (a.breaches.length * 2 + a.attempts));
 
             tbUsers.innerHTML = compromisedUsers.length ? compromisedUsers.map(u => `
@@ -781,15 +838,15 @@
                     <td><span class="px-2.5 py-1 rounded text-xs ${u.riskBadge}">${u.riskLevel}</span></td>
                     <td class="text-xs text-gray-300">${u.alerts.join(' ')}</td>
                 </tr>
-            `).join('') : `<tr><td colspan="5" class="p-4 text-center text-green-400">Sin usuarios en riesgo crítico detectados.</td></tr>`;
+            `).join('') : `<tr><td colspan="5" class="p-4 text-center text-green-400">Sin usuarios en riesgo alto o crítico detectados.</td></tr>`;
 
-            // B) EQUIPOS COMPROMETIDOS
             const hostMap = {};
             const getHostObj = (h) => {
-                if (!hostMap[h]) {
-                    hostMap[h] = { wsusDaysOld: 0, wazuhEventsCount: 0, outdatedEsetVer: false, missingEsetApp: false, esetLastConnOver2Months: false, details: [] };
+                const key = cleanHostname(h);
+                if (!hostMap[key]) {
+                    hostMap[key] = { displayHost: h, wsusDaysOld: 0, wazuhEventsCount: 0, outdatedEsetVer: false, missingEsetApp: false, esetLastConnOver2Months: false, details: [] };
                 }
-                return hostMap[h];
+                return hostMap[key];
             };
 
             (wsusData || []).forEach(w => {
@@ -799,7 +856,7 @@
                 if (regDate && !isNaN(regDate.getTime())) {
                     const diffDays = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
                     obj.wsusDaysOld = diffDays;
-                    if (diffDays > 30) obj.details.push(`Sin actualización WSUS hace ${diffDays} días (>30 días).`);
+                    if (diffDays > 30) obj.details.push(`Sin actualización WSUS hace ${diffDays} días.`);
                 }
             });
 
@@ -813,29 +870,19 @@
                 const obj = getHostObj(e.hostname);
                 if (!e.security_aplication || e.security_aplication.trim() === '' || e.security_aplication === 'null') {
                     obj.missingEsetApp = true;
-                    obj.details.push(`Sin información de app de seguridad (security_aplication).`);
+                    obj.details.push(`Sin app de seguridad detectada.`);
                 }
                 const verStr = e.version_aplication || '';
                 const mainVer = parseInt(verStr.split('.')[0], 10);
                 if (!verStr || isNaN(mainVer) || mainVer < 10) {
                     obj.outdatedEsetVer = true;
-                    obj.details.push(`Versión ESET obsoleta o no detectada (${verStr || 'N/D'}).`);
-                }
-                if (e.last_conection) {
-                    const connDate = new Date(e.last_conection);
-                    if (!isNaN(connDate.getTime())) {
-                        const diffDays = Math.floor((now - connDate) / (1000 * 60 * 60 * 24));
-                        if (diffDays >= 60) {
-                            obj.esetLastConnOver2Months = true;
-                            obj.details.push(`Última conexión ESET > 2 meses (${Math.floor(diffDays / 30)} meses).`);
-                        }
-                    }
+                    obj.details.push(`Versión ESET obsoleta (${verStr || 'N/D'}).`);
                 }
             });
 
             const compromisedHosts = Object.keys(hostMap)
-                .map(hostname => {
-                    const data = hostMap[hostname];
+                .map(key => {
+                    const data = hostMap[key];
                     const hasWazuhEvents = data.wazuhEventsCount > 0;
                     const wsusAlert = data.wsusDaysOld > 30;
                     const esetAlert = data.missingEsetApp || data.outdatedEsetVer || data.esetLastConnOver2Months;
@@ -854,13 +901,9 @@
                         riskBadge = 'bg-yellow-800 text-yellow-100';
                     }
 
-                    if (hasWazuhEvents && !data.details.some(d => d.includes('Wazuh'))) {
-                        data.details.push(`Presenta ${data.wazuhEventsCount} evento(s) de seguridad en Wazuh.`);
-                    }
-
-                    return { hostname, ...data, riskLevel, riskBadge };
+                    return { hostname: data.displayHost, ...data, riskLevel, riskBadge };
                 })
-                .filter(h => h.riskLevel === 'Crítico')
+                .filter(h => h.riskLevel === 'Crítico' || h.riskLevel === 'Alto')
                 .sort((a, b) => b.details.length - a.details.length);
 
             tbEquipos.innerHTML = compromisedHosts.length ? compromisedHosts.map(h => `
@@ -871,19 +914,18 @@
                     <td class="text-xs text-gray-300">
                         ${h.missingEsetApp ? '<span class="text-red-400 block">⚠️ Sin app seguridad</span>' : ''}
                         ${h.outdatedEsetVer ? '<span class="text-yellow-400 block">⚠️ Versión obsoleta</span>' : ''}
-                        ${h.esetLastConnOver2Months ? '<span class="text-orange-400 block">⚠️ Conexión > 2 meses</span>' : ''}
-                        ${!h.missingEsetApp && !h.outdatedEsetVer && !h.esetLastConnOver2Months ? '<span class="text-green-400">OK</span>' : ''}
+                        ${!h.missingEsetApp && !h.outdatedEsetVer ? '<span class="text-green-400">OK</span>' : ''}
                     </td>
                     <td><span class="px-2.5 py-1 rounded text-xs ${h.riskBadge}">${h.riskLevel}</span></td>
                     <td class="text-xs text-gray-300">${h.details.join(' ')}</td>
                 </tr>
-            `).join('') : `<tr><td colspan="6" class="p-4 text-center text-green-400">Sin equipos en riesgo crítico detectados.</td></tr>`;
+            `).join('') : `<tr><td colspan="6" class="p-4 text-center text-green-400">Sin equipos en riesgo alto o crítico detectados.</td></tr>`;
         }
 
-        // 6. MODELO PROBABILÍSTICO DE COMPROMISO EQUIPOS
+        // 6. MODELO PROBABILÍSTICO DE COMPROMISO EQUIPOS (CORREGIDO - CÁLCULOS 100% DINÁMICOS)
         async function loadModeloProbabilistico() {
             const tb = document.getElementById('tb-modelo-ranking');
-            tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Calculando modelo probabilístico sigmoide...</td></tr>`;
+            tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Calculando regresión sigmoide sobre la infraestructura...</td></tr>`;
 
             const [{ data: equiposData }, { data: wsusData }, { data: esetData }, { data: breachesData }, { data: wazuhData }] = await Promise.all([
                 _supabase.from('equipos_usuarios').select('*'),
@@ -895,69 +937,75 @@
 
             const now = new Date();
 
+            // 1. Mapeo normalizado WSUS por Hostname
             const wsusMap = {};
             (wsusData || []).forEach(w => {
-                if (!w.hostname) return;
+                const key = cleanHostname(w.hostname);
+                if (!key) return;
                 const rawPct = (w.patch_coverage_pct || '').toString().replace(/[^0-9.]/g, '');
                 const patchPct = rawPct !== '' ? parseFloat(rawPct) : 100;
-                
                 const regDate = w.created_at ? new Date(w.created_at) : null;
                 const daysOld = (regDate && !isNaN(regDate.getTime())) 
                     ? Math.floor((now - regDate) / (1000 * 60 * 60 * 24)) 
                     : 0;
-
-                wsusMap[w.hostname] = { patchPct, daysOld };
+                wsusMap[key] = { patchPct, daysOld };
             });
 
+            // 2. Mapeo normalizado ESET por Hostname
             const esetMap = {};
             (esetData || []).forEach(e => {
-                if (!e.hostname) return;
+                const key = cleanHostname(e.hostname);
+                if (!key) return;
                 const ver = (e.version_aplication || '');
                 const mainVer = parseInt(ver.split('.')[0], 10);
                 const isOk = e.security_aplication && mainVer >= 10 && e.status !== 'Inactivo';
-                esetMap[e.hostname] = {
+                esetMap[key] = {
                     statusText: isOk ? 'OK' : 'Alerta',
                     isAlert: !isOk
                 };
             });
 
+            // 3. Mapeo normalizado Brechas por Usuario Limpio
             const breachesMap = {};
             (breachesData || []).forEach(b => {
-                const u = b.name_user || b.user;
-                if (!u) return;
-                breachesMap[u] = (breachesMap[u] || 0) + 1;
+                const uKey = cleanUsername(b.name_user || b.user);
+                if (!uKey) return;
+                breachesMap[uKey] = (breachesMap[uKey] || 0) + 1;
             });
 
-            const wazuhMap = {};
+            // 4. Mapeo normalizado Wazuh por Hostname y Usuario Limpio
+            const wazuhHostMap = {};
+            const wazuhUserMap = {};
             (wazuhData || []).forEach(w => {
-                if (w.hostname) wazuhMap[w.hostname] = (wazuhMap[w.hostname] || 0) + 1;
-                const u = w.name_user || w.user;
-                if (u) wazuhMap[u] = (wazuhMap[u] || 0) + 1;
+                const hKey = cleanHostname(w.hostname);
+                if (hKey) wazuhHostMap[hKey] = (wazuhHostMap[hKey] || 0) + 1;
+
+                const uKey = cleanUsername(w.name_user || w.user);
+                if (uKey) wazuhUserMap[uKey] = (wazuhUserMap[uKey] || 0) + 1;
             });
 
-            const hostSet = new Set();
-            (equiposData || []).forEach(eq => eq.hostname && hostSet.add(eq.hostname));
-            (wsusData || []).forEach(w => w.hostname && hostSet.add(w.hostname));
-            (esetData || []).forEach(e => e.hostname && hostSet.add(e.hostname));
-
-            const hostsList = Array.from(hostSet);
-            if (hostsList.length === 0) {
-                const sampleUsers = [
-                    { host: 'A20965', user: 'Alma Verónica Cárdenas Ramírez' },
-                    { host: 'A20966', user: 'Paulina Barba Mendoza' },
-                    { host: 'A20967', user: 'Blanca Ivón Herrera Padilla' },
-                    { host: 'A20968', user: 'Stock' },
-                    { host: 'A20969', user: 'Montserrat Salomón Ferrer' },
-                    { host: 'A20970', user: 'Arturo Soto González' },
-                    { host: 'A20971', user: 'Katia Bazavilvazo Martínez' },
-                    { host: 'A20972', user: 'Leoncio Monjarás Wintergerst' },
-                    { host: 'A20973', user: 'Mariana Ximena Díaz Vera' },
-                    { host: 'A20974', user: 'Carlos Antonio Reyes Sahagun' }
-                ];
-                sampleUsers.forEach(s => {
-                    equiposData.push({ hostname: s.host, name_user: s.user, user: s.user });
-                });
-            }
+            // 5. Consolidación de todos los hostnames reales detectados
+            const hostsCatalog = {};
+            (equiposData || []).forEach(eq => {
+                const hKey = cleanHostname(eq.hostname);
+                if (!hKey) return;
+                hostsCatalog[hKey] = {
+                    hostname: eq.hostname,
+                    usuario: eq.name_user || eq.user || 'No Asignado'
+                };
+            });
+            (wsusData || []).forEach(w => {
+                const hKey = cleanHostname(w.hostname);
+                if (hKey && !hostsCatalog[hKey]) {
+                    hostsCatalog[hKey] = { hostname: w.hostname, usuario: 'No Asignado' };
+                }
+            });
+            (esetData || []).forEach(e => {
+                const hKey = cleanHostname(e.hostname);
+                if (hKey && !hostsCatalog[hKey]) {
+                    hostsCatalog[hKey] = { hostname: e.hostname, usuario: e.name_user || e.user || 'No Asignado' };
+                }
+            });
 
             const BETA_0 = -3.0;
             const BETA_ESET = 2.5;
@@ -967,24 +1015,48 @@
 
             let totalSigmoidProbSum = 0;
             let criticalCount = 0;
+            let fullTelemetryCount = 0;
 
-            const scoredEquipos = (equiposData || []).map(item => {
-                const hostname = item.hostname || 'Desconocido';
-                const usuario = item.name_user || item.user || item.usuario || 'No Asignado';
+            let totalContribESET = 0;
+            let totalContribWSUS = 0;
+            let totalContribBrechas = 0;
+            let totalContribWazuh = 0;
 
-                const wsusInfo = wsusMap[hostname] || { patchPct: 100, daysOld: 0 };
-                const esetInfo = esetMap[hostname] || { statusText: 'OK', isAlert: false };
-                const numBreaches = breachesMap[usuario] || 0;
-                const numWazuh = (wazuhMap[hostname] || 0) + (wazuhMap[usuario] || 0);
+            const hostKeysList = Object.keys(hostsCatalog);
 
+            const scoredEquipos = hostKeysList.map(hKey => {
+                const item = hostsCatalog[hKey];
+                const hostname = item.hostname;
+                const rawUser = item.usuario;
+                const cleanU = cleanUsername(rawUser);
+
+                const wsusInfo = wsusMap[hKey] || { patchPct: 100, daysOld: 0 };
+                const esetInfo = esetMap[hKey] || { statusText: 'OK', isAlert: false };
+                const numBreaches = cleanU ? (breachesMap[cleanU] || 0) : 0;
+                const numWazuh = (wazuhHostMap[hKey] || 0) + (cleanU ? (wazuhUserMap[cleanU] || 0) : 0);
+
+                // Evaluación de Cobertura Telemétrica por activo
+                let dataSources = 0;
+                if (wsusMap[hKey]) dataSources++;
+                if (esetMap[hKey]) dataSources++;
+                if (wazuhHostMap[hKey]) dataSources++;
+                if (dataSources >= 2) fullTelemetryCount++;
+
+                // Vectores normalizados (x)
                 const x_eset = esetInfo.isAlert ? 1.0 : 0.0;
                 const factorParches = Math.max(0, (100 - wsusInfo.patchPct) / 100);
                 const factorDias = Math.min(1.0, wsusInfo.daysOld / 60);
                 const x_wsus = Math.max(0, (factorParches * 0.6) + (factorDias * 0.4));
-
                 const x_brechas = Math.min(1.0, numBreaches / 3.0);
                 const x_wazuh = Math.min(1.0, numWazuh / 5.0);
 
+                // Acumular contribución real por vector
+                totalContribESET += (BETA_ESET * x_eset);
+                totalContribWSUS += (BETA_WSUS * x_wsus);
+                totalContribBrechas += (BETA_BRECHAS * x_brechas);
+                totalContribWazuh += (BETA_WAZUH * x_wazuh);
+
+                // Evaluación de la Regresión Sigmoide
                 const z = BETA_0 + (BETA_ESET * x_eset) + (BETA_WSUS * x_wsus) + (BETA_BRECHAS * x_brechas) + (BETA_WAZUH * x_wazuh);
                 const pAtaque = 1.0 / (1.0 + Math.exp(-z));
                 const probPct = Math.round(pAtaque * 100);
@@ -994,7 +1066,7 @@
 
                 return {
                     hostname,
-                    usuario,
+                    usuario: rawUser,
                     wsusText: `${Math.round(wsusInfo.patchPct)}% (${wsusInfo.daysOld}d)`,
                     esetStatus: esetInfo.statusText,
                     breachesCount: numBreaches,
@@ -1006,17 +1078,36 @@
             scoredEquipos.sort((a, b) => b.pAtaque - a.pAtaque);
             const top15 = scoredEquipos.slice(0, 15);
 
+            // ACTUALIZACIÓN DE KPIS EN TIEMPO REAL
             document.getElementById('ml-kpi-criticos').textContent = criticalCount;
-            const avgProb = scoredEquipos.length > 0 ? Math.round(totalSigmoidProbSum / scoredEquipos.length) : 5;
+            const avgProb = scoredEquipos.length > 0 ? Math.round(totalSigmoidProbSum / scoredEquipos.length) : 0;
             document.getElementById('ml-kpi-promedio').textContent = `${avgProb}%`;
 
+            // Determinación dinámica del Factor Dominante
+            const vectorContributions = [
+                { name: 'Estado ESET', val: totalContribESET, beta: '+2.5' },
+                { name: 'Cobertura WSUS', val: totalContribWSUS, beta: '+2.2' },
+                { name: 'Brechas Credenciales', val: totalContribBrechas, beta: '+2.0' },
+                { name: 'Eventos Wazuh', val: totalContribWazuh, beta: '+1.8' }
+            ];
+            vectorContributions.sort((a, b) => b.val - a.val);
+            const dominantVector = vectorContributions[0];
+
+            document.getElementById('ml-kpi-dominante').textContent = dominantVector.name;
+            document.getElementById('ml-kpi-dominante-sub').textContent = `Mayor impacto observado en red (β = ${dominantVector.beta})`;
+
+            // Cobertura Telemétrica Real
+            const telemetryPct = scoredEquipos.length > 0 ? Math.round((fullTelemetryCount / scoredEquipos.length) * 100) : 0;
+            document.getElementById('ml-kpi-cobertura').textContent = `${telemetryPct}%`;
+            document.getElementById('ml-kpi-cobertura-sub').textContent = `${fullTelemetryCount} de ${scoredEquipos.length} equipos monitoreados multi-fuente`;
+
             if (top15.length === 0) {
-                tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Sin datos de equipos para modelar.</td></tr>`;
+                tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Sin datos de equipos registrados para calcular.</td></tr>`;
                 return;
             }
 
             tb.innerHTML = top15.map(item => `
-                <tr class="hover:bg-gray-750 transition-colors">
+                <tr class="hover:bg-gray-750 transition-colors border-b border-gray-750">
                     <td class="p-3 font-semibold text-white flex items-center gap-2">
                         <span class="text-cyan-400">💻</span> ${item.hostname}
                     </td>
@@ -1027,7 +1118,7 @@
                             ${item.esetStatus}
                         </span>
                     </td>
-                    <td class="text-gray-300">${item.breachesCount}</td>
+                    <td class="text-gray-300 font-mono">${item.breachesCount}</td>
                     <td class="text-right p-3">
                         <span class="inline-block px-2.5 py-1 rounded text-xs font-bold ${
                             item.probPct >= 70 ? 'bg-red-950 text-red-400 border border-red-800' :
@@ -1041,10 +1132,10 @@
             `).join('');
         }
 
-        // 7. MODELO PROBABILÍSTICO DE COMPROMISO USUARIOS
+        // 7. MODELO PROBABILÍSTICO DE COMPROMISO USUARIOS (CORREGIDO - CÁLCULOS 100% DINÁMICOS)
         async function loadModeloProbabilisticoUsuarios() {
             const tb = document.getElementById('tb-modelo-usuarios-ranking');
-            tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Calculando regresión sigmoide para usuarios...</td></tr>`;
+            tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Calculando regresión sigmoide para identidades de usuarios...</td></tr>`;
 
             const [{ data: equiposData }, { data: breachesData }, { data: wazuhData }, { data: esetData }] = await Promise.all([
                 _supabase.from('equipos_usuarios').select('*'),
@@ -1053,47 +1144,51 @@
                 _supabase.from('eset_inventory').select('*')
             ]);
 
+            // Mapeo dinámico por usuario normalizado
             const breachesMap = {};
             (breachesData || []).forEach(b => {
-                const u = b.name_user || b.user;
-                if (!u) return;
-                breachesMap[u] = (breachesMap[u] || 0) + 1;
+                const uKey = cleanUsername(b.name_user || b.user);
+                if (!uKey) return;
+                breachesMap[uKey] = (breachesMap[uKey] || 0) + 1;
             });
 
             const wazuhMap = {};
             (wazuhData || []).forEach(w => {
-                const u = w.name_user || w.user;
-                if (u) wazuhMap[u] = (wazuhMap[u] || 0) + 1;
+                const uKey = cleanUsername(w.name_user || w.user);
+                if (!uKey) return;
+                wazuhMap[uKey] = (wazuhMap[uKey] || 0) + 1;
             });
 
             const esetAlertsMap = {};
             (esetData || []).forEach(e => {
-                const u = e.name_user || e.user;
+                const uKey = cleanUsername(e.name_user || e.user);
+                if (!uKey) return;
                 const alerts = (e.alerts || 0) + (e.detections || 0);
-                if (u) esetAlertsMap[u] = (esetAlertsMap[u] || 0) + alerts;
+                esetAlertsMap[uKey] = (esetAlertsMap[uKey] || 0) + alerts;
             });
 
-            const userMap = {};
+            // Consolidación de todos los usuarios reales registrados
+            const userCatalog = {};
             (equiposData || []).forEach(eq => {
-                const u = eq.user || eq.name_user;
-                if (!u) return;
-                userMap[u] = eq.hostname || 'N/A';
+                const rawU = eq.user || eq.name_user;
+                const uKey = cleanUsername(rawU);
+                if (!uKey) return;
+                userCatalog[uKey] = { displayName: rawU, hostname: eq.hostname || 'N/A' };
             });
-
-            const userNamesList = Object.keys(userMap);
-            if (userNamesList.length === 0) {
-                const sampleUsers = [
-                    { user: 'Adriana Lavibe Ramírez Saaib', host: 'GDL-A20996' },
-                    { user: 'Eleonor Asela Valenzuela Ramos', host: 'GDL-A21289' },
-                    { user: 'Alma Verónica Cárdenas Ramírez', host: 'A20965' },
-                    { user: 'Paulina Barba Mendoza', host: 'A20966' },
-                    { user: 'Blanca Ivón Herrera Padilla', host: 'A20967' },
-                    { user: 'Montserrat Salomón Ferrer', host: 'A20969' },
-                    { user: 'Arturo Soto González', host: 'A20970' },
-                    { user: 'Katia Bazavilvazo Martínez', host: 'A20971' }
-                ];
-                sampleUsers.forEach(s => { userMap[s.user] = s.host; });
-            }
+            (breachesData || []).forEach(b => {
+                const rawU = b.name_user || b.user;
+                const uKey = cleanUsername(rawU);
+                if (uKey && !userCatalog[uKey]) {
+                    userCatalog[uKey] = { displayName: rawU, hostname: '-' };
+                }
+            });
+            (wazuhData || []).forEach(w => {
+                const rawU = w.name_user || w.user;
+                const uKey = cleanUsername(rawU);
+                if (uKey && !userCatalog[uKey]) {
+                    userCatalog[uKey] = { displayName: rawU, hostname: w.hostname || '-' };
+                }
+            });
 
             const BETA_0 = -3.2;
             const BETA_BRECHAS = 2.8;
@@ -1102,17 +1197,41 @@
 
             let totalSigmoidProbSum = 0;
             let criticalCount = 0;
+            let activeMonitoringCount = 0;
 
-            const scoredUsers = Object.keys(userMap).map(userName => {
-                const hostname = userMap[userName];
-                const numBreaches = breachesMap[userName] || 0;
-                const numWazuh = wazuhMap[userName] || 0;
-                const numEsetAlerts = esetAlertsMap[userName] || 0;
+            let totalContribBrechas = 0;
+            let totalContribWazuh = 0;
+            let totalContribESET = 0;
 
+            const userKeysList = Object.keys(userCatalog);
+
+            const scoredUsers = userKeysList.map(uKey => {
+                const item = userCatalog[uKey];
+                const displayName = item.displayName;
+                const hostname = item.hostname;
+
+                const numBreaches = breachesMap[uKey] || 0;
+                const numWazuh = wazuhMap[uKey] || 0;
+                const numEsetAlerts = esetAlertsMap[uKey] || 0;
+
+                // Evaluación de Cobertura Telemétrica de Identidad
+                let userSources = 0;
+                if (numBreaches > 0) userSources++;
+                if (numWazuh > 0) userSources++;
+                if (numEsetAlerts > 0) userSources++;
+                if (userSources >= 1) activeMonitoringCount++;
+
+                // Vectores normalizados (x)
                 const x_brechas = Math.min(1.0, numBreaches / 3.0);
                 const x_wazuh = Math.min(1.0, numWazuh / 5.0);
                 const x_eset = Math.min(1.0, numEsetAlerts / 3.0);
 
+                // Acumular contribución real por vector
+                totalContribBrechas += (BETA_BRECHAS * x_brechas);
+                totalContribWazuh += (BETA_WAZUH * x_wazuh);
+                totalContribESET += (BETA_ESET * x_eset);
+
+                // Regresión sigmoide
                 const z = BETA_0 + (BETA_BRECHAS * x_brechas) + (BETA_WAZUH * x_wazuh) + (BETA_ESET * x_eset);
                 const pCompromiso = 1.0 / (1.0 + Math.exp(-z));
                 const probPct = Math.round(pCompromiso * 100);
@@ -1121,7 +1240,7 @@
                 if (probPct >= 70) criticalCount++;
 
                 return {
-                    userName,
+                    userName: displayName,
                     hostname,
                     numBreaches,
                     numWazuh,
@@ -1134,24 +1253,42 @@
             scoredUsers.sort((a, b) => b.pCompromiso - a.pCompromiso);
             const top15 = scoredUsers.slice(0, 15);
 
+            // ACTUALIZACIÓN DE KPIS DE USUARIO EN TIEMPO REAL
             document.getElementById('ml-kpi-user-criticos').textContent = criticalCount;
-            const avgProb = scoredUsers.length > 0 ? Math.round(totalSigmoidProbSum / scoredUsers.length) : 8;
+            const avgProb = scoredUsers.length > 0 ? Math.round(totalSigmoidProbSum / scoredUsers.length) : 0;
             document.getElementById('ml-kpi-user-promedio').textContent = `${avgProb}%`;
 
+            // Determinación dinámica del Factor Dominante en Usuarios
+            const userVectorContributions = [
+                { name: 'Brechas Credenciales', val: totalContribBrechas, beta: '+2.8' },
+                { name: 'Eventos Wazuh', val: totalContribWazuh, beta: '+2.4' },
+                { name: 'Alertas Agente ESET', val: totalContribESET, beta: '+1.9' }
+            ];
+            userVectorContributions.sort((a, b) => b.val - a.val);
+            const dominantUserVector = userVectorContributions[0];
+
+            document.getElementById('ml-kpi-user-dominante').textContent = dominantUserVector.name;
+            document.getElementById('ml-kpi-user-dominante-sub').textContent = `Mayor impacto en identidades (β = ${dominantUserVector.beta})`;
+
+            // Cobertura telemétrica de usuarios
+            const userCoveragePct = scoredUsers.length > 0 ? Math.round((activeMonitoringCount / scoredUsers.length) * 100) : 0;
+            document.getElementById('ml-kpi-user-cobertura').textContent = `${userCoveragePct}%`;
+            document.getElementById('ml-kpi-user-cobertura-sub').textContent = `${activeMonitoringCount} de ${scoredUsers.length} cuentas con telemetría activa`;
+
             if (top15.length === 0) {
-                tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Sin usuarios registrados para modelar.</td></tr>`;
+                tb.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Sin usuarios registrados para evaluar.</td></tr>`;
                 return;
             }
 
             tb.innerHTML = top15.map(item => `
-                <tr class="hover:bg-gray-750 transition-colors">
+                <tr class="hover:bg-gray-750 transition-colors border-b border-gray-750">
                     <td class="p-3 font-semibold text-white flex items-center gap-2">
                         <span class="text-indigo-400">👤</span> ${item.userName}
                     </td>
                     <td class="text-gray-300 font-mono text-xs">${item.hostname}</td>
-                    <td class="text-gray-300">${item.numBreaches} brechas</td>
-                    <td class="text-gray-300">${item.numWazuh} eventos</td>
-                    <td class="text-gray-300">${item.numEsetAlerts} alertas</td>
+                    <td class="text-gray-300 font-mono">${item.numBreaches} brechas</td>
+                    <td class="text-gray-300 font-mono">${item.numWazuh} eventos</td>
+                    <td class="text-gray-300 font-mono">${item.numEsetAlerts} alertas</td>
                     <td class="text-right p-3">
                         <span class="inline-block px-2.5 py-1 rounded text-xs font-bold ${
                             item.probPct >= 70 ? 'bg-red-950 text-red-400 border border-red-800' :
